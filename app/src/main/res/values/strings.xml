@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Bank</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="login_header">Bank Login</string>
+    <string name="register_header">Register Account</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="deposit">Deposit</string>
+    <string name="amount">Amount</string>
+</resources>
