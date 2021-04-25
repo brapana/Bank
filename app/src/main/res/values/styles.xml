@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Bank.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Bank.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Bank.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- shape appearance -->
+    <style name="Bank.ShapeAppearance.Small" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerSize">@dimen/corner_size</item>
+    </style>
+
+    <!-- text input layout -->
+    <style name="Bank.TextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">?attr/colorPrimary</item>
+        <item name="boxStrokeErrorColor">?attr/colorError</item>
+        <item name="endIconTint">?attr/colorPrimary</item>
+    </style>
+
+    <!-- button -->
+    <style name="Bank.TextButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
+        <item name="android:padding">@dimen/button_padding</item>
+        <item name="rippleColor">@color/ripple_material_light</item>
+    </style>
+
+    <!-- typography -->
+    <style name="Bank.Heading" parent="@style/TextAppearance.MaterialComponents.Headline2"/>
+    <style name="Bank.Heading2" parent="@style/TextAppearance.MaterialComponents.Headline4"/>
+    <style name="Bank.Body" parent="@style/TextAppearance.MaterialComponents.Body1"/>
+</resources>
