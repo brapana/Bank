@@ -9,12 +9,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.View;
+import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -22,6 +20,7 @@ import com.google.android.material.textfield.TextInputLayout;
 public class MainActivity extends AppCompatActivity {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private TextInputEditText usernameEditText, passwordEditText;
     private String username, password = "";
@@ -130,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         catch (SQLiteException e) {
-            //log
+            Log.e(TAG, e.getMessage());
         }
 
         return false;
