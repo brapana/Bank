@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,7 +9,17 @@
     android:orientation="vertical"
     tools:context=".LoggedInActivity">
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_logout_black_24dp"
+        android:tint="?attr/colorPrimary"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="logout" />
+
     <Space
+        android:id="@+id/spacer0"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacer" />
 
@@ -17,75 +27,74 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_below="@id/spacer0"
         android:text="Hello, user"
-        android:textAlignment="center"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center_horizontal"
         android:textAppearance="@style/Bank.Heading" />
 
     <TextView
         android:id="@+id/balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_below="@id/title"
         android:text="Balance: $40.00"
-        android:textAlignment="center"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center_horizontal"
         android:textAppearance="@style/Bank.Heading2" />
 
-    <RelativeLayout
+    <Space
+        android:id="@+id/spacer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacer"
+        android:layout_below="@id/balance" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spacer"
+        android:layout_centerHorizontal="true"
+        app:hintEnabled="true">
 
-        <Space
-            android:id="@+id/spacer"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spacer" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/spacer"
-            android:layout_centerHorizontal="true"
-            app:hintEnabled="true">
+            android:hint="@string/amount"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
+            android:lines="1"
+            android:singleLine="true"
+            android:inputType="numberDecimal"
+            android:ems="18"/>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/amount"
-                android:imeOptions="actionDone"
-                android:maxLines="1"
-                android:lines="1"
-                android:singleLine="true"
-                android:inputType="numberDecimal"
-                android:ems="18"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        </com.google.android.material.textfield.TextInputLayout>
+    <Space
+        android:id="@+id/spacer2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacer"
+        android:layout_below="@id/layout" />
 
-        <Space
-            android:id="@+id/spacer2"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spacer"
-            android:layout_below="@id/layout" />
+    <Button
+        android:id="@+id/withdraw_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spacer2"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/button_margin"
+        android:text="@string/withdraw" />
 
-        <Button
-            android:id="@+id/withdraw_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/spacer2"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="@dimen/button_margin"
-            android:text="@string/withdraw" />
+    <Button
+        android:id="@+id/deposit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spacer2"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/button_margin"
+        android:text="@string/deposit" />
 
-        <Button
-            android:id="@+id/deposit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/spacer2"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/button_margin"
-            android:text="@string/deposit" />
-
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>
