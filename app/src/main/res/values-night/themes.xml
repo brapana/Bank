@@ -27,5 +27,6 @@
         <item name="shapeAppearanceSmallComponent">@style/Bank.ShapeAppearance.Small</item>
         <item name="textInputStyle">@style/Bank.TextInputStyle</item>
         <item name="materialButtonStyle">@style/Bank.TextButtonStyleDark</item>
+        <item name="imageButtonStyle">@style/Bank.ImageButtonDark</item>
     </style>
 </resources>

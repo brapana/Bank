@@ -33,6 +33,16 @@
         <item name="rippleColor">@color/ripple_material_light</item>
     </style>
 
+    <!-- image button -->
+    <style name="Bank.ImageButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:tint">?attr/colorPrimaryVariant</item>
+        <item name="android:backgroundTint">@android:color/transparent</item>
+    </style>
+
+    <style name="Bank.ImageButtonDark" parent="@style/Bank.ImageButton">
+        <item name="android:tint">?attr/colorPrimary</item>
+    </style>
+
     <!-- typography -->
     <style name="Bank.Heading" parent="@style/TextAppearance.MaterialComponents.Headline2"/>
     <style name="Bank.Heading2" parent="@style/TextAppearance.MaterialComponents.Headline4"/>

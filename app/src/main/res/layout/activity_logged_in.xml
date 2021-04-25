@@ -14,13 +14,12 @@
         android:layout_height="wrap_content">
 
         <ImageButton
+            android:id="@+id/logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_logout_black_24dp"
-            android:tint="?attr/colorPrimary"
-            android:backgroundTint="@android:color/transparent"
-            android:contentDescription="logout" />
+            android:contentDescription="@string/logout" />
 
         <Space
             android:id="@+id/spacer0"

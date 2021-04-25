@@ -16,24 +16,20 @@ public class MainActivity extends AppCompatActivity {
 
         // switch to RegisterActivity on "register" button press
         final Button registerButton = findViewById(R.id.register_button);
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        registerButton.setOnClickListener(v -> {
 
-                Intent outgoingIntent = new Intent(MainActivity.this, RegisterActivity.class);
-                startActivity(outgoingIntent);
+            Intent outgoingIntent = new Intent(MainActivity.this, RegisterActivity.class);
+            startActivity(outgoingIntent);
 
-            }
         });
 
         // switch to LoggedInActivity on "login" button press
         final Button loginButton = findViewById(R.id.login_button);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        loginButton.setOnClickListener(v -> {
 
-                Intent outgoingIntent = new Intent(MainActivity.this, LoggedInActivity.class);
-                startActivity(outgoingIntent);
+            Intent outgoingIntent = new Intent(MainActivity.this, LoggedInActivity.class);
+            startActivity(outgoingIntent);
 
-            }
         });
     }
 }
