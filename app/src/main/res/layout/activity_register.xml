@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/default_margin"
-    android:orientation="vertical"
+    android:fillViewport="true"
     tools:context=".RegisterActivity">
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacer" />
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/register_header"
-        android:textAlignment="center"
-        android:textAppearance="@style/Bank.Heading" />
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -32,11 +18,26 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacer" />
 
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spacer"
+            android:text="@string/register_header"
+            android:textAlignment="center"
+            android:textAppearance="@style/Bank.Heading" />
+
+        <Space
+            android:id="@+id/spacer2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacer"
+            android:layout_below="@id/title" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/spacer"
+            android:layout_below="@id/spacer2"
             app:hintEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -52,11 +53,17 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <Space
+            android:id="@+id/spacer3"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacer_small"
+            android:layout_below="@id/layout"/>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/layout"
+            android:layout_below="@id/spacer3"
             app:hintEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -75,7 +82,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Space
-            android:id="@+id/spacer2"
+            android:id="@+id/spacer4"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacer"
             android:layout_below="@id/layout2" />
@@ -84,7 +91,7 @@
             android:id="@+id/register_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/spacer2"
+            android:layout_below="@id/spacer4"
             android:layout_alignParentStart="true"
             android:layout_marginStart="@dimen/button_margin"
             android:text="@string/register" />
@@ -93,11 +100,11 @@
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/spacer2"
+            android:layout_below="@id/spacer4"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/button_margin"
-            android:text="@string/login" />
+            android:text="@string/cancel" />
 
     </RelativeLayout>
 
-</LinearLayout>
+</ScrollView>

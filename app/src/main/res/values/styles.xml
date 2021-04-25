@@ -19,6 +19,7 @@
         <item name="boxStrokeColor">?attr/colorPrimary</item>
         <item name="boxStrokeErrorColor">?attr/colorError</item>
         <item name="endIconTint">?attr/colorPrimary</item>
+        <item name="hintTextColor">?attr/colorOnPrimary</item>
     </style>
 
     <!-- button -->
@@ -26,6 +27,9 @@
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:backgroundTint">?attr/colorPrimary</item>
         <item name="android:padding">@dimen/button_padding</item>
+    </style>
+
+    <style name="Bank.TextButtonStyleDark" parent="@style/Bank.TextButtonStyle">
         <item name="rippleColor">@color/ripple_material_light</item>
     </style>
 

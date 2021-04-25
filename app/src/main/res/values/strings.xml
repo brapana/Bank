@@ -4,6 +4,7 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
+    <string name="cancel">Cancel</string>
     <string name="login_header">Bank Login</string>
     <string name="register_header">Register Account</string>
     <string name="title_activity_register">RegisterActivity</string>

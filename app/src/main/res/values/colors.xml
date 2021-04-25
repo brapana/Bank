@@ -1,27 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color> -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    
-    <color name="teal_200">#80cbc4</color>
-    <color name="teal_200_light">#b2fef7</color> <!-- accent color-->
-    <color name="teal_200_dark">#4f9a94</color> <!-- quick links bar-->
-    
-    <color name="teal_500">#009688</color>
-    <color name="teal_500_light">#52c7b8</color>
-    <color name="teal_500_dark">#00675b</color>
 
-    <color name="deep_orange_200">#ffab91</color>
-    <color name="deep_orange_200_light">#ffddc1</color>
-    <color name="deep_orange_200_dark">#c97b63</color>
-    
-    <color name="error">#cf6679</color>
     <color name="background">#121212</color>
     <color name="light_gray">#E2E2E1</color>
+
+    <!-- WHY ARE YOU PEEKING IN HERE???? -->
+    <!-- Anyway, fun fact:
+         The color palette of this app is using the colors found on the US $100 bill (except the
+         standard colors above). Share this for a compliment. -->
+    <color name="blue_100">#CAD8DB</color>
+    <color name="bronze_500">#D8B798</color>
+    <color name="bronze_900">#B36A41</color>
+    <color name="green_700">#517E61</color>
+    <color name="black_700">#555555</color>
 </resources>
