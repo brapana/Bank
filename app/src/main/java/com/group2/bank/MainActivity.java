@@ -9,6 +9,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -48,9 +50,7 @@ public class MainActivity extends AppCompatActivity {
         final Button loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(v -> {
 
-            retrieveInputs();
-
-            if (isVerified(username, password)) {
+            if (isVerified()) {
                 Intent outgoingIntent = new Intent(MainActivity.this, LoggedInActivity.class);
                 startActivity(outgoingIntent);
             }
@@ -65,19 +65,33 @@ public class MainActivity extends AppCompatActivity {
             userLayout.setError(null);
             return false;
         });
+        //force to be all lowercase
+        usernameEditText.setFilters(new InputFilter[]{new InputFilter.AllCaps() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                return source.toString().toLowerCase();
+            }
+        }});
 
         //clear the error if input has been edited
         //try to login when the enter key is pressed
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             passwordLayout.setError(null);
 
-            if (actionId == EditorInfo.IME_ACTION_GO) {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(passwordEditText.getWindowToken(), 0);
                 loginButton.callOnClick();
                 return true;
             }
             return false;
         });
+        //force to be all lowercase
+        passwordEditText.setFilters(new InputFilter[]{new InputFilter.AllCaps() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                return source.toString().toLowerCase();
+            }
+        }});
 
         if (savedInstanceState != null) {
             username = savedInstanceState.getString(USERNAME);
@@ -107,11 +121,10 @@ public class MainActivity extends AppCompatActivity {
      *
      * check if this is case sensitive
      *
-     * @param username
-     * @param password
      * @return true if the username exists and the password matches; otherwise, false
      */
-    private boolean isVerified(String username, String password) {
+    private boolean isVerified() {
+        retrieveInputs();
         if (username.trim().isEmpty() || password.trim().isEmpty()) return false;
 
         final String query = String.format("SELECT * FROM %s WHERE %s = %s AND %s = %s; ",
@@ -120,12 +133,15 @@ public class MainActivity extends AppCompatActivity {
                 DatabaseHelper.PASSWORD_COL, password);
 
         try (DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
-             SQLiteDatabase db = dbHelper.getReadableDatabase();
-             Cursor cursor = db.rawQuery(query, new String[]{})) {
+             SQLiteDatabase db = dbHelper.getReadableDatabase()) {
 
-            if (cursor.moveToFirst()) {
-                saveSessionInfo(username, cursor.getLong(cursor.getColumnIndex(DatabaseHelper.BALANCE_COL)));
-                return true;
+            try (Cursor cursor = db.rawQuery(query, new String[]{})) {
+                if (cursor.moveToFirst()) {
+                    saveSessionInfo(username, cursor.getLong(cursor.getColumnIndex(DatabaseHelper.BALANCE_COL)));
+                    return true;
+                }
+            }
+            catch (SQLiteException e) {
             }
         }
         catch (SQLiteException e) {

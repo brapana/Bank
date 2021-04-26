@@ -19,7 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static DatabaseHelper instance;
 
-    private DatabaseHelper(Context context) {
+    DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
@@ -49,14 +49,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + "balance REAL);");
     }
 
-
     // add a new user account
-    private static void insertTodoList(SQLiteDatabase db, String username, String password, long initialBalance) {
+    public static long registerAccount(SQLiteDatabase db, String username, String password, long initialBalance) {
         ContentValues accountValues = new ContentValues();
         accountValues.put("username", username);
         accountValues.put("password", password);
         accountValues.put("balance", initialBalance);
-        db.insert("ACCOUNTS", null, accountValues);
+        return db.insert("ACCOUNTS", null, accountValues);
     }
 
 }
