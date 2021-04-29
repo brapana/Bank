@@ -50,7 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // add a new user account
-    public static long registerAccount(SQLiteDatabase db, String username, String password, long initialBalance) {
+    public static long registerAccount(SQLiteDatabase db, String username, String password, float initialBalance) {
         ContentValues accountValues = new ContentValues();
         accountValues.put("username", username);
         accountValues.put("password", password);

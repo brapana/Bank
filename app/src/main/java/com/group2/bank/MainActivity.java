@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
             try (Cursor cursor = db.rawQuery(query, new String[]{})) {
                 if (cursor.moveToFirst()) {
-                    saveSessionInfo(username, cursor.getLong(cursor.getColumnIndex(DatabaseHelper.BALANCE_COL)));
+                    saveSessionInfo(username, cursor.getFloat(cursor.getColumnIndex(DatabaseHelper.BALANCE_COL)));
                     return true;
                 }
             }
@@ -157,11 +157,11 @@ public class MainActivity extends AppCompatActivity {
      * @param username
      * @param balance
      */
-    private void saveSessionInfo(String username, long balance) {
+    private void saveSessionInfo(String username, float balance) {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.pref_session_info), MODE_PRIVATE);
         sharedPref.edit()
                 .putString(DatabaseHelper.USERNAME_COL, username)
-                .putLong(DatabaseHelper.BALANCE_COL, balance)
+                .putFloat(DatabaseHelper.BALANCE_COL, balance)
                 .apply();
     }
 }
