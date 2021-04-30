@@ -50,7 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
                 try (DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
                      SQLiteDatabase db = dbHelper.getWritableDatabase()) {
 
-                    if (DatabaseHelper.registerAccount(db, username, password, 0) == -1) {
+                    if (DatabaseHelper.registerAccount(db, username, Authentication.SHA256(password), 0) == -1) {
                         throw new SQLiteException(String.format("Account not registered for username '%s', password '%s', and balance '%s'",
                                 username, password, 0));
                     }
@@ -168,23 +168,27 @@ public class RegisterActivity extends AppCompatActivity {
      * @return true if the username is unique; otherwise, false
      */
     private boolean isUniqueUsername() {
-        final String query = String.format("SELECT * FROM %s WHERE %s = %s; ",
+        final String query = String.format("SELECT * FROM %s WHERE %s = '%s'; ",
                 DatabaseHelper.ACCOUNTS_TABLE,
                 DatabaseHelper.USERNAME_COL, username);
 
         try (DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
              SQLiteDatabase db = dbHelper.getReadableDatabase()) {
 
-            try (Cursor cursor = db.rawQuery(query, new String[]{})) {
-            }
-            catch (SQLiteException e) {
-                return true;
-            }
+                try (Cursor cursor = db.rawQuery(query, new String[]{})) {
+                    if (cursor.getCount() > 0) {
+                        return false;
+                    }
+                }
+                catch (SQLiteException e) {
+                    return false;
+                }
         }
         catch (SQLiteException e) {
             Log.e(TAG, e.getMessage());
+            return false;
         }
 
-        return false;
+        return true;
     }
 }

@@ -4,13 +4,17 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Base64;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 // Defines the bank database and the ACCOUNTS table which holds the username, password, and balances
 // of each registered user
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "bank"; // the name of our database
-    private static final int DB_VERSION = 1; // the version of the database
+    private static final int DB_VERSION = 2; // the version of the database
 
     public static final String ACCOUNTS_TABLE = "ACCOUNTS";
     public static final String USERNAME_COL = "username";

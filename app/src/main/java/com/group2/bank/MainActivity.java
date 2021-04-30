@@ -127,10 +127,12 @@ public class MainActivity extends AppCompatActivity {
         retrieveInputs();
         if (username.trim().isEmpty() || password.trim().isEmpty()) return false;
 
-        final String query = String.format("SELECT * FROM %s WHERE %s = %s AND %s = %s; ",
+        final String query = String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'; ",
                 DatabaseHelper.ACCOUNTS_TABLE,
                 DatabaseHelper.USERNAME_COL, username,
-                DatabaseHelper.PASSWORD_COL, password);
+                DatabaseHelper.PASSWORD_COL, Authentication.SHA256(password));
+
+        System.out.println(query);
 
         try (DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
              SQLiteDatabase db = dbHelper.getReadableDatabase()) {
