@@ -21,4 +21,5 @@
     <string name="username_invalid">Username may be invalid</string>
     <string name="password_invalid">Password may be invalid</string>
     <string name="amount_invalid">Amount contains invalid input</string>
+    <string name="unexpected_error">Unexpected error</string>
 </resources>

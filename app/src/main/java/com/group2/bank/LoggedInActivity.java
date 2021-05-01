@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 public class LoggedInActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String BALANCE_DISPLAY = "Balance: $%s";
 
     private TextInputLayout amountLayout;
     private TextInputEditText amountEditText;
@@ -43,8 +44,8 @@ public class LoggedInActivity extends AppCompatActivity {
         final TextView user = findViewById(R.id.title);
         user.setText("Hello, " + username);
 
-        final TextView balance = findViewById(R.id.balance);
-        balance.setText("Balance: $" + accountBalance);
+        final TextView balanceDisplay = findViewById(R.id.balance);
+        balanceDisplay.setText(String.format(BALANCE_DISPLAY, accountBalance));
 
         final ImageButton logout = findViewById(R.id.logout);
         logout.setOnClickListener(v -> startActivity(new Intent(LoggedInActivity.this, MainActivity.class)));
@@ -65,10 +66,14 @@ public class LoggedInActivity extends AppCompatActivity {
         });
 
         final Button withdraw = findViewById(R.id.withdraw_button);
-        withdraw.setOnClickListener(v -> updateBalance(true));
+        withdraw.setOnClickListener(v ->
+                balanceDisplay.setText(
+                        String.format(BALANCE_DISPLAY, updateBalance(true))));
 
         final Button deposit = findViewById(R.id.deposit_button);
-        deposit.setOnClickListener(v -> updateBalance(false));
+        deposit.setOnClickListener(v ->
+                balanceDisplay.setText(
+                        String.format(BALANCE_DISPLAY, updateBalance(false))));
     }
 
     /**
@@ -117,25 +122,34 @@ public class LoggedInActivity extends AppCompatActivity {
      * Updates the account balance by subtracting or adding the current balance by the amount inputted
      *
      * @param isWithdraw true if the amount is to be withdrawn from the account; false if the amount is to be deposited
+     * @return the latest balance value in the db
      */
-    private void updateBalance(boolean isWithdraw) {
-        if (isVerified(isWithdraw)) {
+    private float updateBalance(boolean isWithdraw) {
+        final float newBalance = (isWithdraw) ? accountBalance - amountInput : accountBalance + amountInput;
 
-            float newBalance = (isWithdraw) ? accountBalance - amountInput : accountBalance + amountInput;
+        if (isVerified(isWithdraw)) {
 
             try (DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
                  SQLiteDatabase db = dbHelper.getWritableDatabase()) {
 
                 if (DatabaseHelper.updateBalance(db, username, newBalance) == 0) {
-                    throw new SQLiteException(String.format("Entry not found for the username: %s", username));
+
+                    amountLayout.setError(getString(R.string.unexpected_error));
+
+                    throw new SQLiteException(
+                            String.format("Failed to update balance; entry not found for the username: %s", username));
                 }
             }
             catch (SQLiteException e) {
                 Log.e(TAG, e.getMessage());
+                return accountBalance;
             }
         }
         else {
             amountLayout.setError(getString(R.string.amount_invalid));
+            return accountBalance;
         }
+
+        return newBalance;
     }
 }
