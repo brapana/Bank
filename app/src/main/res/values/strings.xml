@@ -18,6 +18,7 @@
     <!-- login error -->
     <string name="username_incorrect">Username may be incorrect</string>
     <string name="password_incorrect">Password may be incorrect</string>
-    <string name="username_invalid">Username may be taken or includes invalid characters</string>
-    <string name="password_invalid">Password includes invalid characters</string>
+    <string name="username_invalid">Username may be invalid</string>
+    <string name="password_invalid">Password may be invalid</string>
+    <string name="amount_invalid">Amount contains invalid input</string>
 </resources>

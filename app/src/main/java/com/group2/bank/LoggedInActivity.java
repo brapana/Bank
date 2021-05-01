@@ -9,19 +9,27 @@ import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
-import org.w3c.dom.Text;
-
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LoggedInActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private TextInputLayout amountLayout;
+    private TextInputEditText amountEditText;
+    private String username;
+    private float accountBalance, amountInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,24 +37,38 @@ public class LoggedInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_logged_in);
 
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.pref_session_info), MODE_PRIVATE);
-        String username = "Hello, "+sharedPref.getString(DatabaseHelper.USERNAME_COL,"");
-        TextView user = findViewById(R.id.title);
-        user.setText(username);
+        username = sharedPref.getString(DatabaseHelper.USERNAME_COL, "");
+        accountBalance = sharedPref.getFloat(DatabaseHelper.BALANCE_COL, 0);
 
-        TextView balance = findViewById(R.id.balance);
-        float money = sharedPref.getFloat(DatabaseHelper.BALANCE_COL, 0);
-        String money_bal = "Balance: $"+money;
-        balance.setText(money_bal);
+        final TextView user = findViewById(R.id.title);
+        user.setText("Hello, " + username);
+
+        final TextView balance = findViewById(R.id.balance);
+        balance.setText("Balance: $" + accountBalance);
 
         final ImageButton logout = findViewById(R.id.logout);
         logout.setOnClickListener(v -> startActivity(new Intent(LoggedInActivity.this, MainActivity.class)));
 
-        final TextInputEditText amount = findViewById(R.id.amount);
-        amount.setFilters(new InputFilter[]{new DecimalDigitsInputFilter()});
+        amountLayout = findViewById(R.id.layout);
+        amountEditText = findViewById(R.id.amount);
+        amountEditText.setFilters(new InputFilter[]{new DecimalDigitsInputFilter()});
 
+        // clear error message when the input is edited
+        // hide soft keyboard on enter key down
+        amountEditText.setOnEditorActionListener((v, actionId, event) -> {
+            amountLayout.setError(null);
 
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(amountEditText.getWindowToken(), 0);
+            }
+            return false;
+        });
 
+        final Button withdraw = findViewById(R.id.withdraw_button);
+        withdraw.setOnClickListener(v -> updateBalance(true));
 
+        final Button deposit = findViewById(R.id.deposit_button);
+        deposit.setOnClickListener(v -> updateBalance(false));
     }
 
     /**
@@ -71,7 +93,49 @@ public class LoggedInActivity extends AppCompatActivity {
         }
     }
 
-    public void UpdateBalance(){
+    /**
+     * Retrieve the amount entered
+     */
+    private void retrieveInput() {
+        try {
+            amountInput = Float.parseFloat(
+                    Objects.requireNonNull(amountEditText.getText()).toString());
+        }
+        catch (NumberFormatException e) {
+            amountInput = 0;
+        }
+    }
 
+    // logic check
+    private boolean isVerified(boolean isWithdraw) {
+        retrieveInput();
+
+        return false;
+    }
+
+    /**
+     * Updates the account balance by subtracting or adding the current balance by the amount inputted
+     *
+     * @param isWithdraw true if the amount is to be withdrawn from the account; false if the amount is to be deposited
+     */
+    private void updateBalance(boolean isWithdraw) {
+        if (isVerified(isWithdraw)) {
+
+            float newBalance = (isWithdraw) ? accountBalance - amountInput : accountBalance + amountInput;
+
+            try (DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
+                 SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+
+                if (DatabaseHelper.updateBalance(db, username, newBalance) == 0) {
+                    throw new SQLiteException(String.format("Entry not found for the username: %s", username));
+                }
+            }
+            catch (SQLiteException e) {
+                Log.e(TAG, e.getMessage());
+            }
+        }
+        else {
+            amountLayout.setError(getString(R.string.amount_invalid));
+        }
     }
 }

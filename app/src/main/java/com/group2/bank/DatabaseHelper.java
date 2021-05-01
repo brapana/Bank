@@ -53,13 +53,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + "balance REAL);");
     }
 
-    // add a new user account
+    /**
+     * Adds a new account entry with the argument values
+     *
+     * @param db
+     * @param username
+     * @param password
+     * @param initialBalance
+     * @return the row id of the newly inserted entry, or -1 if an error occurred
+     */
     public static long registerAccount(SQLiteDatabase db, String username, String password, float initialBalance) {
         ContentValues accountValues = new ContentValues();
-        accountValues.put("username", username);
-        accountValues.put("password", password);
-        accountValues.put("balance", initialBalance);
-        return db.insert("ACCOUNTS", null, accountValues);
+        accountValues.put(USERNAME_COL, username);
+        accountValues.put(PASSWORD_COL, password);
+        accountValues.put(BALANCE_COL, initialBalance);
+        return db.insert(ACCOUNTS_TABLE, null, accountValues);
     }
 
+
+    /**
+     * Updates the balance value
+     *
+     * @param db
+     * @param username the username of the account entry to change
+     * @param newBalance the new balance value to replace the current balance value by
+     * @return the number of rows affected
+     */
+    public static int updateBalance(SQLiteDatabase db, String username, float newBalance) {
+        ContentValues cv = new ContentValues();
+        cv.put(BALANCE_COL, newBalance);
+        return db.update(ACCOUNTS_TABLE, cv, USERNAME_COL + " = ?", new String[] {username});
+    }
 }
