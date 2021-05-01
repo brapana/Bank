@@ -19,6 +19,8 @@ import android.widget.Button;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
@@ -31,6 +33,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.pref_session_info), MODE_PRIVATE);
+        sharedPref.edit()
+                .clear()
+                .commit();
 
         // switch to RegisterActivity on "register" button press
         final Button registerButton = findViewById(R.id.register_button);
@@ -112,8 +119,8 @@ public class MainActivity extends AppCompatActivity {
      * Retrieve the username and the password inputted
      */
     private void retrieveInputs() {
-        username = usernameEditText.getText().toString();
-        password = passwordEditText.getText().toString();
+        username = Objects.requireNonNull(usernameEditText.getText()).toString();
+        password = Objects.requireNonNull(passwordEditText.getText()).toString();
     }
 
     /**
