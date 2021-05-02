@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Base64;
 
+import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -14,7 +15,7 @@ import java.security.NoSuchAlgorithmException;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "bank"; // the name of our database
-    private static final int DB_VERSION = 2; // the version of the database
+    private static final int DB_VERSION = 3; // the version of the database
 
     public static final String ACCOUNTS_TABLE = "ACCOUNTS";
     public static final String USERNAME_COL = "username";
@@ -47,10 +48,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // when version updates, drop previously made tables
         db.execSQL("DROP TABLE IF EXISTS ACCOUNTS;");
 
-        // stores bank accounts including a username, a password, and a balance
+        // stores bank accounts including a username, a password, and a balance (balance stored as
+        // an integer, displayed to user in decimal form shifted left two digits)
         db.execSQL("CREATE TABLE ACCOUNTS (username TEXT PRIMARY KEY, "
                 + "password TEXT, "
-                + "balance REAL);");
+                + "balance INTEGER);");
     }
 
     /**
@@ -79,9 +81,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param newBalance the new balance value to replace the current balance value by
      * @return the number of rows affected
      */
-    public static int updateBalance(SQLiteDatabase db, String username, float newBalance) {
+    public static int updateBalance(SQLiteDatabase db, String username, BigDecimal newBalance) {
         ContentValues cv = new ContentValues();
-        cv.put(BALANCE_COL, newBalance);
+        cv.put(BALANCE_COL, newBalance.multiply(new BigDecimal(100)).intValue());
         return db.update(ACCOUNTS_TABLE, cv, USERNAME_COL + " = ?", new String[] {username});
     }
 }

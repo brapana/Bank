@@ -19,6 +19,7 @@ import android.widget.Button;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -146,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
             try (Cursor cursor = db.rawQuery(query, new String[]{})) {
                 if (cursor.moveToFirst()) {
-                    saveSessionInfo(username, cursor.getFloat(cursor.getColumnIndex(DatabaseHelper.BALANCE_COL)));
+                    saveSessionInfo(username, cursor.getInt(cursor.getColumnIndex(DatabaseHelper.BALANCE_COL)));
                     return true;
                 }
             }
@@ -166,11 +167,11 @@ public class MainActivity extends AppCompatActivity {
      * @param username
      * @param balance
      */
-    private void saveSessionInfo(String username, float balance) {
+    private void saveSessionInfo(String username, int balance) {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.pref_session_info), MODE_PRIVATE);
         sharedPref.edit()
                 .putString(DatabaseHelper.USERNAME_COL, username)
-                .putFloat(DatabaseHelper.BALANCE_COL, balance)
+                .putInt(DatabaseHelper.BALANCE_COL, balance)
                 .apply();
     }
 }

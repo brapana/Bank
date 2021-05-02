@@ -19,18 +19,19 @@ import android.widget.TextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LoggedInActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String BALANCE_DISPLAY = "Balance: $%s";
+    private static final String BALANCE_DISPLAY = "Balance: $%.2f";
 
     private TextInputLayout amountLayout;
     private TextInputEditText amountEditText;
     private String username;
-    private float accountBalance, amountInput;
+    private BigDecimal accountBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +40,26 @@ public class LoggedInActivity extends AppCompatActivity {
 
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.pref_session_info), MODE_PRIVATE);
         username = sharedPref.getString(DatabaseHelper.USERNAME_COL, "");
-        accountBalance = sharedPref.getFloat(DatabaseHelper.BALANCE_COL, 0);
+        accountBalance = new BigDecimal(sharedPref.getInt(DatabaseHelper.BALANCE_COL, 0));
+        accountBalance = accountBalance.divide(new BigDecimal(100));
+
+        final TextView balanceDisplay = findViewById(R.id.balance);
+        balanceDisplay.setText(String.format(BALANCE_DISPLAY, accountBalance));
+
+        final Button withdraw = findViewById(R.id.withdraw_button);
+        withdraw.setOnClickListener(v ->
+                balanceDisplay.setText(
+                        String.format(BALANCE_DISPLAY, updateBalance(true))));
+
+        final Button deposit = findViewById(R.id.deposit_button);
+        deposit.setOnClickListener(v ->
+                balanceDisplay.setText(
+                        String.format(BALANCE_DISPLAY, updateBalance(false))));
 
         final TextView user = findViewById(R.id.title);
         user.setText("Hello, " + username);
 
-        final TextView balanceDisplay = findViewById(R.id.balance);
-        balanceDisplay.setText(String.format(BALANCE_DISPLAY, accountBalance));
+
 
         final ImageButton logout = findViewById(R.id.logout);
         logout.setOnClickListener(v -> startActivity(new Intent(LoggedInActivity.this, MainActivity.class)));
@@ -65,15 +79,7 @@ public class LoggedInActivity extends AppCompatActivity {
             return false;
         });
 
-        final Button withdraw = findViewById(R.id.withdraw_button);
-        withdraw.setOnClickListener(v ->
-                balanceDisplay.setText(
-                        String.format(BALANCE_DISPLAY, updateBalance(true))));
 
-        final Button deposit = findViewById(R.id.deposit_button);
-        deposit.setOnClickListener(v ->
-                balanceDisplay.setText(
-                        String.format(BALANCE_DISPLAY, updateBalance(false))));
     }
 
     /**
@@ -101,21 +107,34 @@ public class LoggedInActivity extends AppCompatActivity {
     /**
      * Retrieve the amount entered
      */
-    private void retrieveInput() {
-        try {
-            amountInput = Float.parseFloat(
-                    Objects.requireNonNull(amountEditText.getText()).toString());
-        }
-        catch (NumberFormatException e) {
-            amountInput = 0;
-        }
+    private String retrieveInput() {
+        return Objects.requireNonNull(amountEditText.getText()).toString();
     }
 
-    // logic check
-    private boolean isVerified(boolean isWithdraw) {
-        retrieveInput();
+    // verify withdraw/deposit
+    private boolean isVerified(String amountInputString, BigDecimal amountInput, boolean isWithdraw, BigDecimal newBalance) {
 
-        return false;
+        String[] splitBalance = amountInputString.split("\\.");
+
+
+        // ensure the individual amount input is non-negative and < 4294967295.99 as required by spec
+        if (amountInput.doubleValue() <= 0.00 || amountInput.doubleValue() > 4294967295.99f) {
+            System.out.println("why?");
+            return false;
+        }
+
+        // ensure there is exactly one decimal in the amount and exactly 2 digits after the decimal
+        if (!(splitBalance.length == 2 && splitBalance[1].length() == 2)) {
+            return false;
+        }
+
+        // if withdrawing, ensure the resulting balance is non-negative
+        // NOTE: vulnerable to integer overflow?
+        if (isWithdraw && newBalance.doubleValue() < 0.00) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -124,24 +143,36 @@ public class LoggedInActivity extends AppCompatActivity {
      * @param isWithdraw true if the amount is to be withdrawn from the account; false if the amount is to be deposited
      * @return the latest balance value in the db
      */
-    private float updateBalance(boolean isWithdraw) {
-        final float newBalance = (isWithdraw) ? accountBalance - amountInput : accountBalance + amountInput;
+    private BigDecimal updateBalance(boolean isWithdraw) {
+        String amountInputString = retrieveInput();
 
-        if (isVerified(isWithdraw)) {
+        final BigDecimal amountInput = (!amountInputString.trim().equals("")) ? new BigDecimal(amountInputString) : new BigDecimal(0.00);
+
+        final BigDecimal newBalance = (isWithdraw) ? accountBalance.subtract(amountInput) : accountBalance.add(amountInput);
+
+        //System.out.println(newBalance.multiply(new BigDecimal(100)).intValue());
+
+
+        if (isVerified(amountInputString, amountInput, isWithdraw, newBalance)) {
 
             try (DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
                  SQLiteDatabase db = dbHelper.getWritableDatabase()) {
 
-                if (DatabaseHelper.updateBalance(db, username, newBalance) == 0) {
+                if (DatabaseHelper.updateBalance(db, username, newBalance) <= 0) {
 
                     amountLayout.setError(getString(R.string.unexpected_error));
 
                     throw new SQLiteException(
                             String.format("Failed to update balance; entry not found for the username: %s", username));
                 }
+                else {
+                    accountBalance = newBalance;
+                    System.out.println("attempting newBalance");
+                }
             }
             catch (SQLiteException e) {
                 Log.e(TAG, e.getMessage());
+                System.out.println("Got here");
                 return accountBalance;
             }
         }
@@ -150,6 +181,8 @@ public class LoggedInActivity extends AppCompatActivity {
             return accountBalance;
         }
 
-        return newBalance;
+        //System.out.printf("%f\n", accountBalance);
+
+        return accountBalance;
     }
 }
