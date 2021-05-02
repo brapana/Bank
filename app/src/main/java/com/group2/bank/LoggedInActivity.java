@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.text.DecimalFormat;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +27,7 @@ import java.util.regex.Pattern;
 public class LoggedInActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String BALANCE_DISPLAY = "Balance: $%s";
-
+    private static final DecimalFormat df = new DecimalFormat("0.00");
     private TextInputLayout amountLayout;
     private TextInputEditText amountEditText;
     private String username;
@@ -45,7 +46,7 @@ public class LoggedInActivity extends AppCompatActivity {
         user.setText("Hello, " + username);
 
         final TextView balanceDisplay = findViewById(R.id.balance);
-        balanceDisplay.setText(String.format(BALANCE_DISPLAY, accountBalance));
+        balanceDisplay.setText(String.format(BALANCE_DISPLAY, df.format(accountBalance)));
 
         final ImageButton logout = findViewById(R.id.logout);
         logout.setOnClickListener(v -> startActivity(new Intent(LoggedInActivity.this, MainActivity.class)));
@@ -68,12 +69,12 @@ public class LoggedInActivity extends AppCompatActivity {
         final Button withdraw = findViewById(R.id.withdraw_button);
         withdraw.setOnClickListener(v ->
                 balanceDisplay.setText(
-                        String.format(BALANCE_DISPLAY, updateBalance(true))));
+                        String.format(BALANCE_DISPLAY, df.format(updateBalance(true)))));
 
         final Button deposit = findViewById(R.id.deposit_button);
         deposit.setOnClickListener(v ->
                 balanceDisplay.setText(
-                        String.format(BALANCE_DISPLAY, updateBalance(false))));
+                        String.format(BALANCE_DISPLAY, df.format(updateBalance(false)))));
     }
 
     /**
@@ -125,31 +126,41 @@ public class LoggedInActivity extends AppCompatActivity {
      * @return the latest balance value in the db
      */
     private float updateBalance(boolean isWithdraw) {
-        final float newBalance = (isWithdraw) ? accountBalance - amountInput : accountBalance + amountInput;
-
-        if (isVerified(isWithdraw)) {
-
-            try (DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
-                 SQLiteDatabase db = dbHelper.getWritableDatabase()) {
-
-                if (DatabaseHelper.updateBalance(db, username, newBalance) == 0) {
-
-                    amountLayout.setError(getString(R.string.unexpected_error));
-
-                    throw new SQLiteException(
-                            String.format("Failed to update balance; entry not found for the username: %s", username));
-                }
-            }
-            catch (SQLiteException e) {
-                Log.e(TAG, e.getMessage());
-                return accountBalance;
-            }
+//        if (isVerified(isWithdraw)) {
+//
+//            try (DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
+//                 SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+//
+//                if (DatabaseHelper.updateBalance(db, username, newBalance) == 0) {
+//
+//                    amountLayout.setError(getString(R.string.unexpected_error));
+//
+//                    throw new SQLiteException(
+//                            String.format("Failed to update balance; entry not found for the username: %s", username));
+//                }
+//            }
+//            catch (SQLiteException e) {
+//                Log.e(TAG, e.getMessage());
+//                return accountBalance;
+//            }
+//        }
+//        else {
+//            amountLayout.setError(getString(R.string.amount_invalid));
+//            return accountBalance;
+//        }
+        float newBalance = 0;
+        retrieveInput();
+        if (isWithdraw){
+            newBalance = accountBalance - amountInput;
         }
-        else {
-            amountLayout.setError(getString(R.string.amount_invalid));
-            return accountBalance;
+        else{
+            newBalance = accountBalance + amountInput;
         }
-
+        System.out.println(newBalance);
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        DatabaseHelper.updateBalance(db, username, newBalance);
+        accountBalance = newBalance;
         return newBalance;
     }
 }
