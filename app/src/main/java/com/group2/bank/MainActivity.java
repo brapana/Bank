@@ -116,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(PASSWORD, password);
     }
 
+    @Override
+    public void onBackPressed() {
+    }
+
     /**
      * Retrieve the username and the password inputted
      */

@@ -62,7 +62,10 @@ public class LoggedInActivity extends AppCompatActivity {
 
 
         final ImageButton logout = findViewById(R.id.logout);
-        logout.setOnClickListener(v -> startActivity(new Intent(LoggedInActivity.this, MainActivity.class)));
+        logout.setOnClickListener(v -> {
+            sharedPref.edit().clear().commit();
+            startActivity(new Intent(LoggedInActivity.this, MainActivity.class));
+        });
 
         amountLayout = findViewById(R.id.layout);
         amountEditText = findViewById(R.id.amount);
@@ -78,6 +81,11 @@ public class LoggedInActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        findViewById(R.id.logout).callOnClick();
     }
 
     /**

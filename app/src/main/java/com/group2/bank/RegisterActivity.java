@@ -112,6 +112,11 @@ public class RegisterActivity extends AppCompatActivity {
         outState.putString(PASSWORD, password);
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+    }
+
     /**
      * Retrieve the username and the password inputted
      */
