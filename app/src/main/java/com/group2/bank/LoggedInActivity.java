@@ -78,8 +78,6 @@ public class LoggedInActivity extends AppCompatActivity {
             }
             return false;
         });
-
-
     }
 
     /**
@@ -105,20 +103,30 @@ public class LoggedInActivity extends AppCompatActivity {
     }
 
     /**
-     * Retrieve the amount entered
+     * Get the amount entered
+     *
+     * @return a String representation of the input
      */
-    private String retrieveInput() {
+    private String getInput() {
         return Objects.requireNonNull(amountEditText.getText()).toString();
     }
 
-    // verify withdraw/deposit
+    /**
+     * Verifies whether the inputted value is valid for withdraw or deposit
+     *
+     * @param amountInputString a String representation of the input
+     * @param amountInput the value inputted
+     * @param isWithdraw true if the amount is to be withdrawn from the account; false if the amount is to be deposited
+     * @param newBalance the value to replace the current balance by
+     * @return true if the inputted value is valid for withdraw or deposit; otherwise, false
+     */
     private boolean isVerified(String amountInputString, BigDecimal amountInput, boolean isWithdraw, BigDecimal newBalance) {
 
         String[] splitBalance = amountInputString.split("\\.");
 
 
         // ensure the individual amount input is non-negative and < 4294967295.99 as required by spec
-        if (amountInput.doubleValue() <= 0.00 || amountInput.doubleValue() > 4294967295.99f) {
+        if (amountInput.doubleValue() <= 0.00f || amountInput.doubleValue() > 4294967295.99f) {
             System.out.println("why?");
             return false;
         }
@@ -144,14 +152,11 @@ public class LoggedInActivity extends AppCompatActivity {
      * @return the latest balance value in the db
      */
     private BigDecimal updateBalance(boolean isWithdraw) {
-        String amountInputString = retrieveInput();
+        String amountInputString = getInput();
 
         final BigDecimal amountInput = (!amountInputString.trim().equals("")) ? new BigDecimal(amountInputString) : new BigDecimal(0.00);
 
         final BigDecimal newBalance = (isWithdraw) ? accountBalance.subtract(amountInput) : accountBalance.add(amountInput);
-
-        //System.out.println(newBalance.multiply(new BigDecimal(100)).intValue());
-
 
         if (isVerified(amountInputString, amountInput, isWithdraw, newBalance)) {
 
@@ -165,23 +170,16 @@ public class LoggedInActivity extends AppCompatActivity {
                     throw new SQLiteException(
                             String.format("Failed to update balance; entry not found for the username: %s", username));
                 }
-                else {
-                    accountBalance = newBalance;
-                    System.out.println("attempting newBalance");
-                }
+
+                accountBalance = newBalance;
             }
             catch (SQLiteException e) {
                 Log.e(TAG, e.getMessage());
-                System.out.println("Got here");
-                return accountBalance;
             }
         }
         else {
             amountLayout.setError(getString(R.string.amount_invalid));
-            return accountBalance;
         }
-
-        //System.out.printf("%f\n", accountBalance);
 
         return accountBalance;
     }
