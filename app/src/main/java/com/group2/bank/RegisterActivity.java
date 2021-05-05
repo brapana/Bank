@@ -133,10 +133,12 @@ public class RegisterActivity extends AppCompatActivity {
      * @return true if the username and the password are valid; otherwise, false
      */
     private boolean isVerified() {
-        boolean check = isValid(true);
+        // validate username
+        boolean check = Authentication.isValid(true, username, this);
         if (!check) userLayout.setError(getString(R.string.username_invalid));
 
-        if (!isValid(false)) {
+        // validate password
+        if (!Authentication.isValid(false, password, this)) {
             Log.e(TAG, "here");
             passwordLayout.setError(getString(R.string.password_invalid));
             check = false;
@@ -145,55 +147,5 @@ public class RegisterActivity extends AppCompatActivity {
         return check;
     }
 
-    /**
-     * Verifies that the input satisfies the following constraints:
-     *  - is not empty
-     *  - contains only underscores, hyphens, dots, digits, or lowercase alphabetical characters
-     *  - does not exist in the database
-     *
-     * @return true if the input is valid; otherwise, false
-     */
-    private boolean isValid(boolean isUsername) {
-        String input = (isUsername) ? username : password;
-        if (input.trim().isEmpty()) return false;
 
-        //constraints check
-        final String regex = "[_\\-\\.0-9a-z]+";
-        Pattern pattern = Pattern.compile(regex);
-        if (!pattern.matcher(input).matches()) return false;
-
-        //unique check
-        if (isUsername) return isUniqueUsername();
-        else return true;
-    }
-
-    /**
-     * Verifies that the username does not exist in the database
-     *
-     * @return true if the username is unique; otherwise, false
-     */
-    private boolean isUniqueUsername() {
-        final String query = String.format("SELECT * FROM %s WHERE %s = '%s'; ",
-                DatabaseHelper.ACCOUNTS_TABLE,
-                DatabaseHelper.USERNAME_COL, username);
-
-        try (DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
-             SQLiteDatabase db = dbHelper.getReadableDatabase()) {
-
-                try (Cursor cursor = db.rawQuery(query, new String[]{})) {
-                    if (cursor.getCount() > 0) {
-                        return false;
-                    }
-                }
-                catch (SQLiteException e) {
-                    return false;
-                }
-        }
-        catch (SQLiteException e) {
-            Log.e(TAG, e.getMessage());
-            return false;
-        }
-
-        return true;
-    }
 }
