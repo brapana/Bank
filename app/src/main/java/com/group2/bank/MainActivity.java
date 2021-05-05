@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private boolean isVerified() {
         retrieveInputs();
-        if (username.trim().isEmpty() || password.trim().isEmpty()) return false;
+        if (username.trim().isEmpty()) return false;
 
         final String query = String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'; ",
                 DatabaseHelper.ACCOUNTS_TABLE,
@@ -151,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
 
             try (Cursor cursor = db.rawQuery(query, new String[]{})) {
                 if (cursor.moveToFirst()) {
-                    saveSessionInfo(username, cursor.getInt(cursor.getColumnIndex(DatabaseHelper.BALANCE_COL)));
+                    saveSessionInfo(cursor.getString(cursor.getColumnIndex(DatabaseHelper.USERNAME_COL)),
+                            cursor.getInt(cursor.getColumnIndex(DatabaseHelper.BALANCE_COL)));
                     return true;
                 }
             }
