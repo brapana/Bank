@@ -40,6 +40,8 @@ public class LoggedInActivity extends AppCompatActivity {
 
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.pref_session_info), MODE_PRIVATE);
         username = sharedPref.getString(DatabaseHelper.USERNAME_COL, "");
+
+        // retrieve account balance from sharedprefs and convert from integer representation to BigDecimal
         accountBalance = new BigDecimal(sharedPref.getInt(DatabaseHelper.BALANCE_COL, 0));
         accountBalance = accountBalance.divide(new BigDecimal(100));
 
@@ -58,8 +60,6 @@ public class LoggedInActivity extends AppCompatActivity {
 
         final TextView user = findViewById(R.id.title);
         user.setText("Hello, " + username);
-
-
 
         final ImageButton logout = findViewById(R.id.logout);
         logout.setOnClickListener(v -> {
@@ -145,7 +145,6 @@ public class LoggedInActivity extends AppCompatActivity {
         }
 
         // if withdrawing, ensure the resulting balance is non-negative
-        // NOTE: vulnerable to integer overflow?
         if (isWithdraw && newBalance.doubleValue() < 0.00) {
             return false;
         }

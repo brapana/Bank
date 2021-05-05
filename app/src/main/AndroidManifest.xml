@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Bank">
-        <activity android:name="com.group2.bank.LoggedInActivity"></activity>
+        <activity android:name="com.group2.bank.LoggedInActivity" android:exported="true"></activity>
         <activity
             android:name="com.group2.bank.RegisterActivity"
             android:label="@string/title_activity_register"

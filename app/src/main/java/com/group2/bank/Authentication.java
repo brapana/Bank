@@ -18,7 +18,11 @@ public class Authentication {
 
     public static MessageDigest md = null;
 
-    // takes in a string and returns the SHA256 hashed version
+    /**
+     * Takes in a string and returns the SHA256 hashed version
+     *
+     * @return SHA256 hashed version of the input string
+      */
     public static String SHA256(String password) {
 
         // Initialize MessageDigest object to use SHA-256 encryption
