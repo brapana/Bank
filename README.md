@@ -1,25 +1,10 @@
 # Bank
- 266P Group 2
+## 266P Group 2
  
- Main Instructions:
+ ### Build Instructions:
  
- Import the code into Android Studio. Android Studio should recoginze it as an Android app and use gradle to build it.
+ Clone and import the code into Android Studio via the built-in VCS feature. Android Studio should recoginze it as an Android app and use Gradle to build it automatically.
  
- Create an emulator of API level 27+ and run it and the app.
+ Create an emulator (and ensure you have the necessary SDK installed) of API level 27+ and run it and the app via Android Studio.
  
- You do need to register a username and password first.
- 
- 
- 
- Overflow is currently possible.
- 
- Step 1: start at 0.00
- 
- Step 2: Deposit 4294967295.99
- 
- Step 3: Log out
- 
- Step 4: Log in
- 
- Step 5: You own me 1 cent now.
- 
+ The application will start with no accounts created, you will have to make them yourself. 
