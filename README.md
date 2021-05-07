@@ -1,10 +1,14 @@
 # Bank
  266P Group 2
  
+ Main Instructions:
  
- To Do List:
+ Import the code into Android Studio. Android Studio should recoginze it as an Android app and use gradle to build it.
  
- See if the vulnerabilities work.
+ Create an emulator of API level 27+ and run it and the app.
+ 
+ You do need to register a username and password first.
+ 
  
  
  Overflow is currently possible.
