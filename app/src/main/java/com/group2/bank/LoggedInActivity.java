@@ -69,6 +69,8 @@ public class LoggedInActivity extends AppCompatActivity {
 
         amountLayout = findViewById(R.id.layout);
         amountEditText = findViewById(R.id.amount);
+
+        // enforce decimal input filter
         amountEditText.setFilters(new InputFilter[]{new DecimalDigitsInputFilter()});
 
         // clear error message when the input is edited
@@ -91,7 +93,7 @@ public class LoggedInActivity extends AppCompatActivity {
     /**
      *  Restricts input to decimal numbers (max of 2 decimal digits) without leading zeros
      */
-    class DecimalDigitsInputFilter implements InputFilter {
+    static class DecimalDigitsInputFilter implements InputFilter {
         private Pattern mPattern;
         DecimalDigitsInputFilter() {
             mPattern = Pattern.compile("^(0|[1-9][0-9]*)(\\.[0-9]{0,2})?$");
@@ -130,14 +132,13 @@ public class LoggedInActivity extends AppCompatActivity {
      */
     private boolean isVerified(String amountInputString, BigDecimal amountInput, boolean isWithdraw, BigDecimal newBalance) {
 
-        String[] splitBalance = amountInputString.split("\\.");
-
-
         // ensure the individual amount input is non-negative and < 4294967295.99 as required by spec
         if (amountInput.doubleValue() <= 0.00f || amountInput.doubleValue() > 4294967295.99f) {
             System.out.println("why?");
             return false;
         }
+
+        String[] splitBalance = amountInputString.split("\\.");
 
         // ensure there is exactly one decimal in the amount and exactly 2 digits after the decimal
         if (!(splitBalance.length == 2 && splitBalance[1].length() == 2)) {

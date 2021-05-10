@@ -16,7 +16,7 @@
         <Space
             android:id="@+id/spacer"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacer" />
+            android:layout_height="60dp" />
 
         <TextView
             android:id="@+id/title"
@@ -30,7 +30,7 @@
         <Space
             android:id="@+id/spacer2"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacer"
+            android:layout_height="60dp"
             android:layout_below="@id/title" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -83,10 +83,11 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
         <Space
             android:id="@+id/spacer4"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacer_small"
+            android:layout_height="20dp"
             android:layout_below="@id/layout2" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -94,20 +95,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/spacer4"
+            android:layout_centerHorizontal="true"
             app:hintEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/intial_balance"
+                android:id="@+id/amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/amount"
+                android:layout_below="@+id/password"
                 android:imeOptions="actionDone"
-                android:layout_below="@+id/username"
-                android:maxLength="127"
                 android:maxLines="1"
                 android:lines="1"
                 android:singleLine="true"
-                android:inputType="textPassword"
+                android:inputType="numberDecimal"
                 android:ems="20"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -115,7 +116,7 @@
         <Space
             android:id="@+id/spacer5"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacer_small"
+            android:layout_height="60dp"
             android:layout_below="@id/layout3" />
 
         <Button

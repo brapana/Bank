@@ -64,11 +64,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param initialBalance
      * @return the row id of the newly inserted entry, or -1 if an error occurred
      */
-    public static long registerAccount(SQLiteDatabase db, String username, String password, float initialBalance) {
+    public static long registerAccount(SQLiteDatabase db, String username, String password, BigDecimal initialBalance) {
         ContentValues accountValues = new ContentValues();
         accountValues.put(USERNAME_COL, username);
         accountValues.put(PASSWORD_COL, password);
-        accountValues.put(BALANCE_COL, initialBalance);
+        accountValues.put(BALANCE_COL, initialBalance.multiply(new BigDecimal(100)).intValue());
         return db.insert(ACCOUNTS_TABLE, null, accountValues);
     }
 
