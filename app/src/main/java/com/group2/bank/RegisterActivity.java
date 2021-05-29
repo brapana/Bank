@@ -59,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                     if (DatabaseHelper.registerAccount(db, username, Authentication.SHA256(password), initialBalanceDecimal) == -1) {
                         throw new SQLiteException(String.format("Account not registered for username '%s', password '%s', and balance '%s'",
-                                username, password, 0));
+                                username, password, initialBalanceDecimal));
                     }
                 }
 
