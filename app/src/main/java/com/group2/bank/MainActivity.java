@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String PASSWORD = "password";
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private TextInputLayout userLayout, passwordLayout;
     private TextInputEditText usernameEditText, passwordEditText;
     private String username, password = "";
 
@@ -49,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        final TextInputLayout userLayout = findViewById(R.id.layout);
-        final TextInputLayout passwordLayout = findViewById(R.id.layout2);
+        userLayout = findViewById(R.id.layout);
+        passwordLayout = findViewById(R.id.layout2);
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
 
@@ -129,9 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Verifies that the username exists and the password is correct
-     *
-     * check if this is case sensitive
+     * Verifies that the username exists, the password is correct, and each input is valid
      *
      * @return true if the username exists and the password matches; otherwise, false
      */
@@ -139,31 +138,41 @@ public class MainActivity extends AppCompatActivity {
         retrieveInputs();
         if (username.trim().isEmpty()) return false;
 
-        final String query = String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'; ",
-                DatabaseHelper.ACCOUNTS_TABLE,
-                DatabaseHelper.USERNAME_COL, username,
-                DatabaseHelper.PASSWORD_COL, Authentication.SHA256(password));
+        // validate username
+        boolean check = Authentication.isValid(false, username, this);
 
-        System.out.println(query);
+        // validate password
+        if (!Authentication.isValid(false, password, this)) {
+            check = false;
+        }
+
+        final String query = String.format("SELECT * FROM %s WHERE %s = ? AND %s = ?; ",
+                DatabaseHelper.ACCOUNTS_TABLE,
+                DatabaseHelper.USERNAME_COL,
+                DatabaseHelper.PASSWORD_COL);
 
         try (DatabaseHelper dbHelper = DatabaseHelper.getInstance(this);
              SQLiteDatabase db = dbHelper.getReadableDatabase()) {
 
-            try (Cursor cursor = db.rawQuery(query, new String[]{})) {
+            try (Cursor cursor = db.rawQuery(query, new String[]{username, Authentication.SHA256(password)})) {
                 if (cursor.moveToFirst()) {
                     saveSessionInfo(cursor.getString(cursor.getColumnIndex(DatabaseHelper.USERNAME_COL)),
                             cursor.getString(cursor.getColumnIndex(DatabaseHelper.BALANCE_COL)));
-                    return true;
+                }
+                else {
+                    check = false;
                 }
             }
             catch (SQLiteException e) {
+                check = false;
             }
         }
         catch (SQLiteException e) {
+            check = false;
             Log.e(TAG, e.getMessage());
         }
 
-        return false;
+        return check;
     }
 
     /**

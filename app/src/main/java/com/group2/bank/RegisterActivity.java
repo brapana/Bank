@@ -163,7 +163,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         // validate password
         if (!Authentication.isValid(false, password, this)) {
-            Log.e(TAG, "here");
             passwordLayout.setError(getString(R.string.password_invalid));
             check = false;
         }
