@@ -13,8 +13,6 @@
     <string name="deposit">Deposit</string>
     <string name="amount">Amount</string>
 
-    <string name="pref_session_info">com.group2.bank.PREFERENCE_SESSION_INFO</string>
-
     <!-- login error -->
     <string name="username_incorrect">Username may be incorrect</string>
     <string name="password_incorrect">Password may be incorrect</string>
@@ -22,4 +20,7 @@
     <string name="password_invalid">Password may be invalid</string>
     <string name="amount_invalid">Amount contains invalid input</string>
     <string name="unexpected_error">Unexpected error</string>
+
+    <!-- Security concerns for error log -->
+    <string name="unauthorized_error">Unauthorized login: arrived at the logged in screen without proper credentials</string>
 </resources>
