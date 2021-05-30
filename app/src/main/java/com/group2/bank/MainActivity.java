@@ -40,6 +40,18 @@ public class MainActivity extends AppCompatActivity {
                 .clear()
                 .commit();
 
+        try {
+            Bundle bundle = getIntent().getExtras();
+        }
+        catch (NullPointerException e) {
+            if (savedInstanceState != null) {
+
+            }
+            else {
+                Log.e(TAG, e.getMessage());
+            }
+        }
+
         // switch to RegisterActivity on "register" button press
         final Button registerButton = findViewById(R.id.register_button);
         registerButton.setOnClickListener(v -> {

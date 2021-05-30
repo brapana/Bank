@@ -22,4 +22,7 @@
     <string name="password_invalid">Password may be invalid</string>
     <string name="amount_invalid">Amount contains invalid input</string>
     <string name="unexpected_error">Unexpected error</string>
+
+    <!-- Security concerns for error log -->
+    <string name="unauthorized_error">Unauthorized login: arrived at the logged in screen without proper credentials</string>
 </resources>
