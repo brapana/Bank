@@ -1,9 +1,9 @@
 package com.group2.bank;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
@@ -38,12 +38,29 @@ public class LoggedInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
 
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.pref_session_info), MODE_PRIVATE);
-        username = sharedPref.getString(DatabaseHelper.USERNAME_COL, "");
+        try {
+            Bundle bundle = getIntent().getExtras();
 
-        // retrieve account balance from sharedprefs and convert from string representation to BigDecimal
-        accountBalance = new BigDecimal(sharedPref.getString(DatabaseHelper.BALANCE_COL, ""));
-        accountBalance = accountBalance.divide(new BigDecimal(100));
+            if (bundle != null) {
+                username = bundle.getString(DatabaseHelper.USERNAME_COL);
+
+                String bundleBalance = bundle.getString(DatabaseHelper.BALANCE_COL);
+                accountBalance = accountBalanceToBigDecimal(bundleBalance);
+            }
+        }
+        catch(NullPointerException e) {
+            // NullPointerException thrown when getIntent() returns null
+
+            if (savedInstanceState == null) {
+                Log.e(TAG, getString(R.string.unexpected_error));
+                startActivity(new Intent(LoggedInActivity.this, MainActivity.class));
+            }
+
+            username = savedInstanceState.getString(DatabaseHelper.USERNAME_COL);
+
+            String savedBalance = savedInstanceState.getString(DatabaseHelper.BALANCE_COL);
+            accountBalance = accountBalanceToBigDecimal(savedBalance);
+        }
 
         final TextView balanceDisplay = findViewById(R.id.balance);
         balanceDisplay.setText(String.format(BALANCE_DISPLAY, accountBalance));
@@ -63,7 +80,6 @@ public class LoggedInActivity extends AppCompatActivity {
 
         final ImageButton logout = findViewById(R.id.logout);
         logout.setOnClickListener(v -> {
-            sharedPref.edit().clear().commit();
             startActivity(new Intent(LoggedInActivity.this, MainActivity.class));
         });
 
@@ -88,6 +104,14 @@ public class LoggedInActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         findViewById(R.id.logout).callOnClick();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(DatabaseHelper.USERNAME_COL, username);
+        outState.putString(DatabaseHelper.BALANCE_COL, accountBalanceToString(accountBalance));
     }
 
     /**
@@ -190,5 +214,26 @@ public class LoggedInActivity extends AppCompatActivity {
         }
 
         return accountBalance;
+    }
+
+    /**
+     * Converts the argument by dividing it by 100 and returns the balance as a BigDecimal
+     *
+     * @param balanceString a whole number
+     * @return a BigDecimal representation of the balance
+     */
+    private static BigDecimal accountBalanceToBigDecimal(String balanceString) {
+        BigDecimal output = new BigDecimal(balanceString);
+        return output.divide(new BigDecimal(100));
+    }
+
+    /**
+     * Converts the argumeny by multiplying it by 100 and returns the balance as a String
+     *
+     * @param balanceBigDecimal a fraction with 2 decimal places
+     * @return a String representation of the balance
+     */
+    private static String accountBalanceToString(BigDecimal balanceBigDecimal) {
+        return balanceBigDecimal.multiply(new BigDecimal(100)).toString();
     }
 }

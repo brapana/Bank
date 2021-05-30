@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -19,7 +18,6 @@ import android.widget.Button;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,29 +27,12 @@ public class MainActivity extends AppCompatActivity {
 
     private TextInputLayout userLayout, passwordLayout;
     private TextInputEditText usernameEditText, passwordEditText;
-    private String username, password = "";
+    private String username, password, balance = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.pref_session_info), MODE_PRIVATE);
-        sharedPref.edit()
-                .clear()
-                .commit();
-
-        try {
-            Bundle bundle = getIntent().getExtras();
-        }
-        catch (NullPointerException e) {
-            if (savedInstanceState != null) {
-
-            }
-            else {
-                Log.e(TAG, e.getMessage());
-            }
-        }
 
         // switch to RegisterActivity on "register" button press
         final Button registerButton = findViewById(R.id.register_button);
@@ -73,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
             if (isVerified()) {
                 Intent outgoingIntent = new Intent(MainActivity.this, LoggedInActivity.class);
+                outgoingIntent.putExtra(DatabaseHelper.USERNAME_COL, username);
+                outgoingIntent.putExtra(DatabaseHelper.BALANCE_COL, balance);
+
                 startActivity(outgoingIntent);
             }
             else {
@@ -168,8 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
             try (Cursor cursor = db.rawQuery(query, new String[]{username, Authentication.SHA256(password)})) {
                 if (cursor.moveToFirst()) {
-                    saveSessionInfo(cursor.getString(cursor.getColumnIndex(DatabaseHelper.USERNAME_COL)),
-                            cursor.getString(cursor.getColumnIndex(DatabaseHelper.BALANCE_COL)));
+                    balance = cursor.getString(cursor.getColumnIndex(DatabaseHelper.BALANCE_COL));
                 }
                 else {
                     check = false;
@@ -185,19 +168,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return check;
-    }
-
-    /**
-     * Saves the username and the password to a private shared preference.
-     *
-     * @param username
-     * @param balance
-     */
-    private void saveSessionInfo(String username, String balance) {
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.pref_session_info), MODE_PRIVATE);
-        sharedPref.edit()
-                .putString(DatabaseHelper.USERNAME_COL, username)
-                .putString(DatabaseHelper.BALANCE_COL, balance)
-                .apply();
     }
 }
