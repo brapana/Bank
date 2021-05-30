@@ -51,7 +51,7 @@ public class Authentication {
      *
      * @return true if the input is valid; otherwise, false
      */
-    public static boolean isValid(boolean isUsername, String input, Context context) {
+    public static boolean isValid(boolean checkUniqueUsername, String input, Context context) {
         if (input.trim().isEmpty()) return false;
 
         //constraints check
@@ -60,7 +60,7 @@ public class Authentication {
         if (!pattern.matcher(input).matches()) return false;
 
         //unique check
-        if (isUsername)
+        if (checkUniqueUsername)
             return isUniqueUsername(input, context);
         else
             return true;
@@ -72,14 +72,14 @@ public class Authentication {
      * @return true if the username is unique; otherwise, false
      */
     public static boolean isUniqueUsername(String username, Context context) {
-        final String query = String.format("SELECT * FROM %s WHERE %s = '%s'; ",
+        final String query = String.format("SELECT * FROM %s WHERE %s = ?; ",
                 DatabaseHelper.ACCOUNTS_TABLE,
-                DatabaseHelper.USERNAME_COL, username);
+                DatabaseHelper.USERNAME_COL);
 
         try (DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
              SQLiteDatabase db = dbHelper.getReadableDatabase()) {
 
-            try (Cursor cursor = db.rawQuery(query, new String[]{})) {
+            try (Cursor cursor = db.rawQuery(query, new String[]{username})) {
                 if (cursor.getCount() > 0) {
                     return false;
                 }

@@ -15,7 +15,7 @@ import java.security.NoSuchAlgorithmException;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "bank"; // the name of our database
-    private static final int DB_VERSION = 3; // the version of the database
+    private static final int DB_VERSION = 6; // the version of the database
 
     public static final String ACCOUNTS_TABLE = "ACCOUNTS";
     public static final String USERNAME_COL = "username";
@@ -68,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues accountValues = new ContentValues();
         accountValues.put(USERNAME_COL, username);
         accountValues.put(PASSWORD_COL, password);
-        accountValues.put(BALANCE_COL, initialBalance.multiply(new BigDecimal(100)).intValue());
+        accountValues.put(BALANCE_COL, initialBalance.multiply(new BigDecimal(100)).toString());
         return db.insert(ACCOUNTS_TABLE, null, accountValues);
     }
 
@@ -83,7 +83,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public static int updateBalance(SQLiteDatabase db, String username, BigDecimal newBalance) {
         ContentValues cv = new ContentValues();
-        cv.put(BALANCE_COL, newBalance.multiply(new BigDecimal(100)).intValue());
+        cv.put(BALANCE_COL, newBalance.multiply(new BigDecimal(100)).toString());
         return db.update(ACCOUNTS_TABLE, cv, USERNAME_COL + " = ?", new String[] {username});
     }
 }

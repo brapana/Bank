@@ -41,8 +41,8 @@ public class LoggedInActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.pref_session_info), MODE_PRIVATE);
         username = sharedPref.getString(DatabaseHelper.USERNAME_COL, "");
 
-        // retrieve account balance from sharedprefs and convert from integer representation to BigDecimal
-        accountBalance = new BigDecimal(sharedPref.getInt(DatabaseHelper.BALANCE_COL, 0));
+        // retrieve account balance from sharedprefs and convert from string representation to BigDecimal
+        accountBalance = new BigDecimal(sharedPref.getString(DatabaseHelper.BALANCE_COL, ""));
         accountBalance = accountBalance.divide(new BigDecimal(100));
 
         final TextView balanceDisplay = findViewById(R.id.balance);

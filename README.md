@@ -3,7 +3,7 @@
  
  ### Build Instructions:
  
- Clone and import the code into Android Studio via the built-in VCS feature. Android Studio should recoginze it as an Android app and use Gradle to build it automatically.
+ Clone and import the code into Android Studio via the built-in VCS feature. Android Studio should recognize it as an Android app and use Gradle to build it automatically.
  
  Create an emulator (and ensure you have the necessary SDK installed) of API level 27+ and run it and the app via Android Studio.
  
